@@ -1,69 +1,69 @@
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:lottie/lottie.dart';
 
+import '../generate_qr/view.dart';
+import '../scan_qr/view.dart';
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
-
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
 
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  Barcode? result;
-  QRViewController? controller;
-  @override
-  void reassemble() {
-    super.reassemble();
-    if (Platform.isAndroid) {
-      controller!.pauseCamera();
-    }
-    controller!.resumeCamera();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            flex: 5,
-            child: QRView(
-              key: qrKey,
-              onQRViewCreated: _onQRViewCreated,
-            ),
+
+        body: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              //Display Image
+              LottieBuilder.network("https://assets10.lottiefiles.com/temp/lf20_PFb8HA.json"),
+
+              //First Button
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(color: Colors.indigo)
+                          )
+                      )
+                  ),
+                  onPressed: (){
+                    // Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ScanQR()));
+                  },
+                  child: Text("Scan QR Code",style: TextStyle(color: Colors.indigo[900]),),
+                ),
+              ),
+              SizedBox(height: 10),
+
+              //Second Button
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: ElevatedButton(
+                    style: ButtonStyle(
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                                side: BorderSide(color: Colors.indigo)
+                            )
+                        )
+                    ),
+                  onPressed: (){
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>
+                        GenerateQR()));
+                  },
+                  child: Text("Generate QR Code", style: TextStyle(color: Colors.indigo[900]),),
+                ),
+              ),
+            ],
           ),
-          Expanded(
-            flex: 1,
-            child: Center(
-              child: (result != null)
-                  ? Text(
-                  'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}')
-                  : const Text('Scan a code'),
-            ),
-          )
-        ],
-      ),
+        )
     );
   }
-  void _onQRViewCreated(QRViewController controller) {
-    this.controller = controller;
-    controller.scannedDataStream.listen((scanData) {
-      setState(() {
-        result = scanData;
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    controller?.dispose();
-    super.dispose();
-  }
 }
-
-
