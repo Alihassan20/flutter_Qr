@@ -10,8 +10,19 @@ class _GenerateQRState extends State<GenerateQR> {
 
   String qrData="github.com/alihassan20";
   final qrdataFeed = TextEditingController();
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is removed from the
+    // widget tree.
+    qrdataFeed.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       //Appbar having title
       appBar: AppBar(
@@ -31,7 +42,8 @@ class _GenerateQRState extends State<GenerateQR> {
               Text("Generate QR Code",style: TextStyle(fontSize: 20),),
 
               //TextField for input link
-              const TextField(
+               TextField(
+                controller: qrdataFeed,
                 decoration: InputDecoration(
                     hintText: "Enter your link here..."
                 ),
@@ -45,15 +57,18 @@ class _GenerateQRState extends State<GenerateQR> {
                     side: BorderSide(color: Colors.indigo),
                   ),
                   child: ElevatedButton(
-                    onPressed: () async {
+                    onPressed: ()  {
                       //a little validation for the textfield
-                      if (qrdataFeed.text.isEmpty) {
+
+
+                      if (qrdataFeed.text.isNotEmpty) {
                         setState(() {
-                          qrData = "";
+                          qrData = qrdataFeed.text.toString();
                         });
+
                       } else {
                         setState(() {
-                          qrData = qrdataFeed.text;
+                          qrData = "oops";
                         });
                       }
                     },
@@ -62,6 +77,7 @@ class _GenerateQRState extends State<GenerateQR> {
                   ),
                 ),
               ),
+          Text(qrData,style: TextStyle(color: Colors.indigo[900],),)
             ],
           ),
         ),
